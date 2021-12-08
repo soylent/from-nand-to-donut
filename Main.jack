@@ -1,0 +1,58 @@
+/**
+ * From nand to donut
+ */
+class Main {
+  /** Program entry point */
+  function void main() {
+    var char key;
+    var Donut donut;
+    var boolean run;
+
+    do Trig.init();
+
+    let run = true;
+    let donut = Donut.new();
+    do donut.draw();
+    do Main.printHelp();
+
+    while (run) {
+      let key = Keyboard.keyPressed();
+
+      // Q or ESC key
+      if ((key = 81) | (key = 140))  { let run = false; }
+      // Up arrow
+      if (key = 131) { do donut.rotateX(2); }
+      // Down arrow
+      if (key = 133) { do donut.rotateX(-2); }
+      // Left arrow
+      if (key = 130) { do donut.rotateY(2); }
+      // Right arrow
+      if (key = 132) { do donut.rotateY(-2); }
+
+      // If arrow keys
+      if ((key > 129) & (key < 134)) {
+        do donut.draw();
+        do Main.printHelp();
+      }
+    }
+
+    do donut.dispose();
+    do Trig.dispose();
+
+    return;
+  }
+
+  /** Prints help. */
+  function void printHelp() {
+      do Output.moveCursor(0, 0);
+      do Output.printString("From NAND to DONUT");
+
+      do Output.moveCursor(21, 0);
+      do Output.printString("Rotate  ARROW KEYS");
+
+      do Output.println();
+      do Output.printString("Exit    ESC");
+
+      return;
+  }
+}

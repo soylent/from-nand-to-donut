@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+#
+# This Ruby script generates trigonometric look-up tables used in Trig.jack.
+#
+# $ ./generate_trig_tables SCALE SIZE | pbcopy
+# Then paste the result to Trig.jack
+#
+scale = Integer(ARGV[0] || 16)
+size = Integer(ARGV[1] || 63)
+puts "let size = #{size};"
+puts "let scale = #{scale};"
+puts
+%i[sin cos].each do |func|
+  puts "let #{func} = Array.new(size);"
+  size.times do |i|
+    rad = 2 * Math::PI / size * i
+    val = Math.public_send(func, rad) * scale
+    puts "let #{func}[#{i}] = #{val.round};"
+  end
+  puts
+end

@@ -1,0 +1,185 @@
+/** Trigonometric functions */
+class Trig {
+  // Pre-computed sine and cosine tables
+  static Array sin, cos;
+  // Size of the pre-computed sine and cosine tables
+  static int size;
+  // Scale factor
+  static int scale;
+
+  /** Initializes the sine and cosine arrays */
+  function void init() {
+    let size = 64;
+    let scale = 16;
+
+    let sin = Array.new(size);
+    let sin[0] = 0;
+    let sin[1] = 2;
+    let sin[2] = 3;
+    let sin[3] = 5;
+    let sin[4] = 6;
+    let sin[5] = 8;
+    let sin[6] = 9;
+    let sin[7] = 10;
+    let sin[8] = 11;
+    let sin[9] = 12;
+    let sin[10] = 13;
+    let sin[11] = 14;
+    let sin[12] = 15;
+    let sin[13] = 15;
+    let sin[14] = 16;
+    let sin[15] = 16;
+    let sin[16] = 16;
+    let sin[17] = 16;
+    let sin[18] = 16;
+    let sin[19] = 15;
+    let sin[20] = 15;
+    let sin[21] = 14;
+    let sin[22] = 13;
+    let sin[23] = 12;
+    let sin[24] = 11;
+    let sin[25] = 10;
+    let sin[26] = 9;
+    let sin[27] = 8;
+    let sin[28] = 6;
+    let sin[29] = 5;
+    let sin[30] = 3;
+    let sin[31] = 2;
+    let sin[32] = 0;
+    let sin[33] = -2;
+    let sin[34] = -3;
+    let sin[35] = -5;
+    let sin[36] = -6;
+    let sin[37] = -8;
+    let sin[38] = -9;
+    let sin[39] = -10;
+    let sin[40] = -11;
+    let sin[41] = -12;
+    let sin[42] = -13;
+    let sin[43] = -14;
+    let sin[44] = -15;
+    let sin[45] = -15;
+    let sin[46] = -16;
+    let sin[47] = -16;
+    let sin[48] = -16;
+    let sin[49] = -16;
+    let sin[50] = -16;
+    let sin[51] = -15;
+    let sin[52] = -15;
+    let sin[53] = -14;
+    let sin[54] = -13;
+    let sin[55] = -12;
+    let sin[56] = -11;
+    let sin[57] = -10;
+    let sin[58] = -9;
+    let sin[59] = -8;
+    let sin[60] = -6;
+    let sin[61] = -5;
+    let sin[62] = -3;
+    let sin[63] = -2;
+
+    let cos = Array.new(size);
+    let cos[0] = 16;
+    let cos[1] = 16;
+    let cos[2] = 16;
+    let cos[3] = 15;
+    let cos[4] = 15;
+    let cos[5] = 14;
+    let cos[6] = 13;
+    let cos[7] = 12;
+    let cos[8] = 11;
+    let cos[9] = 10;
+    let cos[10] = 9;
+    let cos[11] = 8;
+    let cos[12] = 6;
+    let cos[13] = 5;
+    let cos[14] = 3;
+    let cos[15] = 2;
+    let cos[16] = 0;
+    let cos[17] = -2;
+    let cos[18] = -3;
+    let cos[19] = -5;
+    let cos[20] = -6;
+    let cos[21] = -8;
+    let cos[22] = -9;
+    let cos[23] = -10;
+    let cos[24] = -11;
+    let cos[25] = -12;
+    let cos[26] = -13;
+    let cos[27] = -14;
+    let cos[28] = -15;
+    let cos[29] = -15;
+    let cos[30] = -16;
+    let cos[31] = -16;
+    let cos[32] = -16;
+    let cos[33] = -16;
+    let cos[34] = -16;
+    let cos[35] = -15;
+    let cos[36] = -15;
+    let cos[37] = -14;
+    let cos[38] = -13;
+    let cos[39] = -12;
+    let cos[40] = -11;
+    let cos[41] = -10;
+    let cos[42] = -9;
+    let cos[43] = -8;
+    let cos[44] = -6;
+    let cos[45] = -5;
+    let cos[46] = -3;
+    let cos[47] = -2;
+    let cos[48] = 0;
+    let cos[49] = 2;
+    let cos[50] = 3;
+    let cos[51] = 5;
+    let cos[52] = 6;
+    let cos[53] = 8;
+    let cos[54] = 9;
+    let cos[55] = 10;
+    let cos[56] = 11;
+    let cos[57] = 12;
+    let cos[58] = 13;
+    let cos[59] = 14;
+    let cos[60] = 15;
+    let cos[61] = 15;
+    let cos[62] = 16;
+    let cos[63] = 16;
+
+    return;
+  }
+
+  /** Returns the sine table. */
+  function Array sin() {
+    return sin;
+  }
+
+  /** Returns the cosine table. */
+  function Array cos() {
+    return cos;
+  }
+
+  /** Returns the size of trig tables. */
+  function int size() {
+    return size;
+  }
+
+  /** Returns the scale factor. */
+  function int scale() {
+    return scale;
+  }
+
+  /** Clamps the input angle to the range of acceptable values. */
+  function int clamp(int angle) {
+    if (angle > (size-1)) { return 0; }
+    if (angle < 0) { return (size-1); }
+
+    return angle;
+  }
+
+  /** Disposes the trig tables. */
+  function void dispose() {
+    do Memory.deAlloc(sin);
+    do Memory.deAlloc(cos);
+
+    return;
+  }
+}

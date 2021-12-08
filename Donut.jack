@@ -1,0 +1,141 @@
+/**
+ * Donut AKA Torus
+ */
+class Donut {
+  // Half width and half height of the screen
+  static int halfWidth, halfHeight;
+
+  // Cross section radius
+  field int radius1;
+  // Donut radius
+  field int radius2;
+  // Donut scale
+  field int scale;
+  // Distance from the viewer
+  field int distance;
+  // Rotation angles
+  field int a, b;
+  // Sine and cosine tables
+  field Array sin, cos;
+  // Size of the trig tables
+  field int trigSize;
+  // Trig scale factor
+  field int s;
+  // Luminance scale
+  field int lumScale;
+
+  /** Constructs a new donut. */
+  constructor Donut new() {
+    // These values are chosen to fit the Hack screen.
+    let radius1 = 8;
+    let radius2 = 16;
+    let scale = 216;
+    let distance = 48;
+    let a = 24;
+    let b = 56;
+    let halfWidth = 256;
+    let halfHeight = 128;
+    let lumScale = 5;
+    let trigSize = Trig.size();
+    let s = Trig.scale();
+    let cos = Trig.cos();
+    let sin = Trig.sin();
+
+    return this;
+  }
+
+  /** Rotates the donut around X axis. */
+  method void rotateX(int delta) {
+    let a = Trig.clamp(a + delta);
+    return;
+  }
+
+  /** Rotates the donut around Y axis. */
+  method void rotateY(int delta) {
+    let b = Trig.clamp(b + delta);
+    return;
+  }
+
+  /** Renders the donut. */
+  method void draw() {
+    // Real coordinates
+    var int x, y, z;
+    // Projected coordinates
+    var int xp, yp;
+    // Rotation angles to build the donut
+    var int theta, phi;
+    // Intermediate results
+    var int circleX, circleY;
+    // Luminance
+    var int lum;
+
+    do Screen.clearScreen();
+
+    let theta = 0;
+    while (theta < trigSize) {
+      let phi = 0;
+      while (phi < trigSize) {
+        let circleX = radius2 + ((radius1 * cos[theta]) / s);
+        let circleY = (radius1 * sin[theta]) / s;
+
+        let x = (
+          (circleX*((cos[b]*cos[phi]) + (sin[a]*sin[b]*sin[phi]/s))/s) -
+          ((circleY*cos[a]*sin[b])/s)
+        ) / s;
+
+        let y = (
+          (circleX*((sin[b]*cos[phi]) - (sin[a]*cos[b]*sin[phi]/s))/s) +
+          ((circleY*cos[a]*cos[b])/s)
+        ) / s;
+
+        let z = distance + (((cos[a]*circleX*sin[phi]/s) + (circleY*sin[a]))/s);
+        if (~(z = 0)) {
+          let xp = halfWidth  + (scale * x / z);
+          let yp = halfHeight - (scale * y / z);
+
+          let lum = (
+            (cos[phi]*cos[theta]*sin[b]/s) -
+            (cos[a]*cos[theta]*sin[phi]/s) -
+            (sin[a]*sin[theta]) +
+            (cos[b]*((cos[a]*sin[theta]) - (cos[theta]*sin[a]*sin[phi]/s))/s)
+          )/s*lumScale/s;
+
+          do Donut.drawPoint(xp, yp, lum);
+        }
+        let phi = phi + 1;
+      }
+      let theta = theta + 2;
+    }
+    return;
+  }
+
+  /** Draws a point of size proportional to the given luminance. */
+  function void drawPoint(int x, int y, int lum) {
+    if (lum > -2) {
+      do Screen.drawPixel(x, y);
+    }
+    if (lum > -1) {
+      do Screen.drawPixel(x-1, y);
+      do Screen.drawPixel(x+1, y);
+    }
+    if (lum > 2) {
+      do Screen.drawPixel(x, y+1);
+      do Screen.drawPixel(x, y-1);
+    }
+    if (lum > 3) {
+      do Screen.drawPixel(x-1, y-1);
+      do Screen.drawPixel(x+1, y+1);
+    }
+    if (lum > 5) {
+      do Screen.drawPixel(x-1, y+1);
+      do Screen.drawPixel(x+1, y-1);
+    }
+    return;
+  }
+
+  /** Disposes this donut. */
+  method void dispose() {
+    do Memory.deAlloc(this);
+    return;
+  }
+}
