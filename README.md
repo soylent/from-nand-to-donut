@@ -7,11 +7,13 @@ https://user-images.githubusercontent.com/1593860/145310050-393211b6-f223-4719-b
 
 ## How to run:
 
-1. Unzip the archive
-1. Start the VM Emulator
-1. Click File > Load Program
-1. Select the project9 directory
-1. Click "Yes" to load the built-in implementation of the stdlib
+1. Compile the project: `sh JackCompiler.sh path/to/from-nand-to-donut`.
+1. Start the VM Emulator.
+1. Click File > Load Program.
+1. Select the project _directory_.
+1. Click "Yes" to load the built-in implementation of the stdlib.
+1. Select "No animation".
+1. Run the code (press `F5`).
 
 Use the arrow keys to rotate the figure.
 Press `Q` or `ESC` to halt the program.
