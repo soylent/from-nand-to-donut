@@ -3,8 +3,7 @@
  */
 class Donut {
   // Half width and half height of the screen
-  static int halfWidth, halfHeight;
-
+  field int halfWidth, halfHeight;
   // Cross section radius
   field int radius1;
   // Donut radius
@@ -15,6 +14,8 @@ class Donut {
   field int distance;
   // Rotation angles
   field int a, b;
+  // Sin and cos of the rotation angles
+  field int sa, ca, sb, cb;
   // Sine and cosine tables
   field Array sin, cos;
   // Size of the trig tables
@@ -40,6 +41,10 @@ class Donut {
     let s = Trig.scale();
     let cos = Trig.cos();
     let sin = Trig.sin();
+    let sa = sin[a];
+    let ca = cos[a];
+    let sb = sin[b];
+    let cb = cos[b];
 
     return this;
   }
@@ -47,12 +52,16 @@ class Donut {
   /** Rotates the donut around X axis. */
   method void rotateX(int delta) {
     let a = Trig.clamp(a + delta);
+    let sa = sin[a];
+    let ca = cos[a];
     return;
   }
 
   /** Rotates the donut around Y axis. */
   method void rotateY(int delta) {
     let b = Trig.clamp(b + delta);
+    let sb = sin[b];
+    let cb = cos[b];
     return;
   }
 
@@ -64,10 +73,12 @@ class Donut {
     var int xp, yp;
     // Rotation angles to build the donut
     var int theta, phi;
-    // Intermediate results
-    var int circleX, circleY;
     // Luminance
     var int lum;
+    // Intermediate results
+    var int circleX, circleY;
+    var int sTheta, cTheta, sPhi, cPhi;
+    var int t1, t2, t3;
 
     do Screen.clearScreen();
 
@@ -75,30 +86,28 @@ class Donut {
     while (theta < trigSize) {
       let phi = 0;
       while (phi < trigSize) {
-        let circleX = radius2 + ((radius1 * cos[theta]) / s);
-        let circleY = (radius1 * sin[theta]) / s;
-
-        let x = (
-          (circleX*((cos[b]*cos[phi]) + (sin[a]*sin[b]*sin[phi]/s))/s) -
-          ((circleY*cos[a]*sin[b])/s)
-        ) / s;
-
-        let y = (
-          (circleX*((sin[b]*cos[phi]) - (sin[a]*cos[b]*sin[phi]/s))/s) +
-          ((circleY*cos[a]*cos[b])/s)
-        ) / s;
-
-        let z = distance + (((cos[a]*circleX*sin[phi]/s) + (circleY*sin[a]))/s);
-        if (~(z = 0)) {
+        let sTheta = sin[theta];
+        let cTheta = cos[theta];
+        let sPhi = sin[phi];
+        let cPhi = cos[phi];
+        let circleX = radius2 + ((radius1 * cTheta) / s);
+        let circleY = (radius1 * sTheta) / s;
+        let t1 = sa * sPhi / s;
+        let t2 = circleY * ca / s;
+        let t3 = circleX * ca / s;
+        let x = ((circleX * ((cb * cPhi) + (t1 * sb)) / s) - (t2 * sb)) / s;
+        let y = ((circleX * ((sb * cPhi) - (t1 * cb)) / s) + (t2 * cb)) / s;
+        let z = distance + (((t3 * sPhi) + (circleY * sa)) / s);
+        if (z > 0) {
           let xp = halfWidth  + (scale * x / z);
           let yp = halfHeight - (scale * y / z);
 
-          let lum = (
-            (cos[phi]*cos[theta]*sin[b]/s) -
-            (cos[a]*cos[theta]*sin[phi]/s) -
-            (sin[a]*sin[theta]) +
-            (cos[b]*((cos[a]*sin[theta]) - (cos[theta]*sin[a]*sin[phi]/s))/s)
-          )/s*lumScale/s;
+          let lum = lumScale * (
+            (cPhi * cTheta * sb / s)
+            - (ca * cTheta * sPhi / s)
+            - (sa * sTheta)
+            + (cb * ((ca * sTheta) - (cTheta * t1)) / s)
+          ) / s / s;
 
           do Donut.drawPoint(xp, yp, lum);
         }
